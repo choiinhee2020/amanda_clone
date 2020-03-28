@@ -2,7 +2,7 @@ from django.contrib.auth.models import AbstractUser
 from django.db import models
 
 import datetime
-from config import settings
+from config.settings.base import AUTH_USER_MODEL
 
 
 class User(AbstractUser):
@@ -123,7 +123,7 @@ class UserProfile(models.Model):
         ('unknown', 'Unknown'),
     ]
 
-    author_id = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, primary_key=True, )
+    author_id = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True, )
     religion = models.CharField(choices=RELIGION, max_length=10, blank=True)
     height = models.PositiveIntegerField(default=150)
     intro = models.CharField(max_length=500, blank=True)

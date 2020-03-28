@@ -11,19 +11,39 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 """
 
 import os
+import json
+
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+ROOT_DIR = os.path.dirname(BASE_DIR)
 
-
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+# MEDIA
+MEDIA_ROOT = os.path.join(ROOT_DIR, '.media')
 MEDIA_URL = '/media/' # 항상 / 로 끝나도록 설정
-print(MEDIA_ROOT)
+
+# STATIC
+STATIC_DIR = os.path.join(BASE_DIR, 'static')
+print('STATIC_DIR >>>', STATIC_DIR)
+STATICFILES_DIRS = [
+    STATIC_DIR,
+]
+
+# 각 application들의 static/폴더, STATICFILES_DIRS의 폴더들이 가진 정적파일들을 모을 폴더
+STATIC_ROOT = os.path.join(ROOT_DIR, '.static')
+STATIC_URL = '/static/'
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
-
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'bg85g)3yxyf9+wkbm@p9_knq74&rv8yc!lcogqjt+r1!vm(_ep'
+
+#SECRETS
+SECRETS_PATH = os.path.join(ROOT_DIR, 'secrets.json')
+SECRETS = json.loads(open(SECRETS_PATH).read())
+SECRETS_DEFAULT = SECRETS['default']
+SECRET_KEY = SECRETS_DEFAULT['SECRET_KEY']
+
+DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -43,6 +63,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+    'storages',
     'django_extensions',
 ]
 
@@ -74,18 +95,17 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'config.wsgi.application'
 
 
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    }
-}
+#
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+#     }
+# }
 
 
 # Password validation
