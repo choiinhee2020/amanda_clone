@@ -2,6 +2,9 @@ from django.contrib.auth.models import AbstractUser
 from django.db import models
 
 import datetime
+
+from django.utils import timezone
+
 from config.settings.base import AUTH_USER_MODEL
 
 
@@ -73,7 +76,7 @@ class User(AbstractUser):
     chance = models.PositiveIntegerField(default=1)
     rank = models.PositiveIntegerField(default=50)
     perfection = models.PositiveIntegerField(default=50)
-    birth_date = models.DateTimeField(blank=True, null=True)
+    birth_date = models.DateTimeField(default=datetime.date(1999, 1, 1))
 
     date_joined = models.DateTimeField(auto_now_add=True)
     date_update = models.DateTimeField(auto_now=True)
@@ -86,9 +89,10 @@ class User(AbstractUser):
     REQUIRED_FIELDS = ['email']
 
     def save(self, *args, **kwargs):
+        self.age = timezone.now().year - self.birth_date.year
         # self.age = datetime.datetime.now().year - self.birth_date.year
-        if self.chance > 3:
-            self.result = 'IMPOSSIBLE'
+        # if self.chance > 3:
+        #     self.result = 'IMPOSSIBLE'
         super().save(*args, **kwargs)
 
     def __str__(self):
